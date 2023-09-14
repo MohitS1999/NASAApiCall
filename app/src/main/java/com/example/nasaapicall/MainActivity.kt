@@ -35,44 +35,46 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Log.d(TAG, "onCreate: calling getdata function")
+        // Observe the UI using UiState class
         observer()
-
+        // call the API
         viewModel.getData()
-
 
     }
 
     private fun observer() {
-                viewModel.getApiData.observe(this){
-                    when(it){
-                        is UiState.Success -> {
-                            binding.date.visibility = View.VISIBLE
-                            binding.globeImage.visibility = View.VISIBLE
-                            binding.description.visibility = View.VISIBLE
-                            binding.progressBar.visibility = View.GONE
+        viewModel.getApiData.observe(this){
+            when(it){
+                is UiState.Success -> { // when we get the data successfully from API
+                    Log.d(TAG, "observeData: Sucess ${it.data}")
+                    // make the visible all the view when we get the data successfully
+                    binding.date.visibility = View.VISIBLE
+                    binding.globeImage.visibility = View.VISIBLE
+                    binding.description.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
 
-                            Log.d(TAG, "observeData: Success ${it.data}")
-                            binding.title.text = it.data.title
-                            binding.date.text = it.data.date
-                            binding.description.text =Editable.Factory.getInstance().newEditable(it.data.explanation)
-                            Glide.with(this).load(it.data.url)
-                                .fitCenter()
-                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE).error(R.drawable.ic_launcher_background).into(binding.globeImage)
-
-                        }
-                        is UiState.Failure -> {
-                            Log.d(TAG, "observeData: Failure")
-                            Toast.makeText(this,it.error,Toast.LENGTH_LONG).show()
-
-                        }
-                        is UiState.Loading -> {
-                            Log.d(TAG, "observeData: Loading.... $it")
-
-                        }
-                    }
+                    //fill the api data in views
+                    binding.title.text = it.data.title
+                    binding.date.text = it.data.date
+                    binding.description.text =Editable.Factory.getInstance().newEditable(it.data.explanation)
+                    // using glide library for loading the image in ImageView
+                    Glide.with(this)
+                        .load(it.data.url)
+                        .fitCenter()
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE) // Caches both the original and resized image
+                        .error(R.drawable.ic_launcher_background)  // Error image to display in case of loading failure
+                        .into(binding.globeImage)
                 }
+                is UiState.Failure -> { // If we get some failure due to Network issue, Http issue
+                    Log.d(TAG, "observeData: Failure")
+                    Toast.makeText(this,it.error,Toast.LENGTH_LONG).show()
+                }
+                is UiState.Loading -> { // when we are calling the api, API call will take time to fetch the data
+                    Log.d(TAG, "observeData: Loading.... $it")
+                }
+            }
+        }
     }
-
 
 
 }

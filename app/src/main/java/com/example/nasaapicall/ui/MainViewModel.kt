@@ -34,17 +34,23 @@ class MainViewModel @Inject constructor(
         Log.d(TAG, "getData: ");
         viewModelScope.launch (Dispatchers.IO){
             try {
-                _getApiData.postValue(UiState.Success( apiCallRepository.getData().body()!!))
+                // using postValue method because we are doing background task.
+                _getApiData.postValue(
+                    UiState.Success(
+                        apiCallRepository.getData().body()!!
+                    )
+                )
+
             } catch(e: HttpException){
                 _getApiData.value = UiState.Failure(e.message())
 
             } catch (e: IOException) {
                 // Returning no internet message
-                // wrapped in Resource.Error
+                // wrapped in UiState.Failure
                 UiState.Failure("Please check your network connection")
             } catch (e: Exception) {
                 // Returning 'Something went wrong' in case
-                // of unknown error wrapped in Resource.Error
+                // of unknown error wrapped in UiState.Failure
                 UiState.Failure("Something went wrong")
             }
 
