@@ -14,6 +14,8 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 private const val TAG = "MainViewModel"
@@ -27,18 +29,29 @@ class MainViewModel @Inject constructor(
     val getApiData:LiveData<UiState<APODModel>>
         get() = _getApiData
 
-    fun getData() : APODModel{
+    fun getData() {
+        _getApiData.value = UiState.Loading
         Log.d(TAG, "getData: ");
-        var data = APODModel("","","","","","","")
         viewModelScope.launch (Dispatchers.IO){
-             data  = apiCallRepository.getData().body()!!
+            try {
+                _getApiData.postValue(UiState.Success( apiCallRepository.getData().body()!!))
+            } catch(e: HttpException){
+                _getApiData.value = UiState.Failure(e.message())
 
-            Log.d(TAG, "getData: $data")
+            } catch (e: IOException) {
+                // Returning no internet message
+                // wrapped in Resource.Error
+                UiState.Failure("Please check your network connection")
+            } catch (e: Exception) {
+                // Returning 'Something went wrong' in case
+                // of unknown error wrapped in Resource.Error
+                UiState.Failure("Something went wrong")
+            }
 
-        }
-        Thread.sleep(5000)
-        Log.d(TAG, "getData: competed returned $data")
-        return data
+
     }
+    }
+
+
 
 }
