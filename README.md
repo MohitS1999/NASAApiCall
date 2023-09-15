@@ -26,7 +26,7 @@ Just download our latest version [NASAApiCall.apk]() and follow the on-screen pr
 - Gradle Plugin Version: 6.7.1
 - Kotlin Plugin Version: 1.7.10
 
-1. Clone the repository: `git clone https://github.com/MohitS1999/OnlineSales.git`
+1. Clone the repository: `git clone https://github.com/MohitS1999/NASAApiCall.git`
 2. Open Android Studio.
 3. Click "Open an existing Android Studio project."
 4. Browse to the project directory and select the `build.gradle` file to open the project.
