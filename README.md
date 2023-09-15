@@ -11,7 +11,7 @@ Welcome to NASA APi Android app! | API calling
 
 ### Installing the App on your Android Device
 
-Just download our latest version [NASAApiCall.apk]() and follow the on-screen prompts on your device.
+Just download our latest version [NASAApiCall.apk](app-debug.apk) and follow the on-screen prompts on your device.
 
  ### Benefits
 - Get the result of Image of the Day in a seconds on your fingers
