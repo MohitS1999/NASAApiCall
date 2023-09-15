@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.BuildCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -15,6 +16,7 @@ import com.example.nasaapicall.databinding.ActivityMainBinding
 import com.example.nasaapicall.model.APODModel
 import com.example.nasaapicall.ui.MainViewModel
 import com.example.nasaapicall.util.UiState
+import com.intuit.sdp.BuildConfig
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -40,6 +42,14 @@ class MainActivity : AppCompatActivity() {
         // call the API
         viewModel.getData()
 
+        Log.d(TAG, "onCreate: ${binding.refreshLayout}")
+        binding.refreshLayout.setOnRefreshListener {
+            // Observe the UI using UiState class
+            observer()
+            // call the API
+            viewModel.getData()
+            binding.refreshLayout.isRefreshing = false
+        }
     }
 
     private fun observer() {
@@ -71,6 +81,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 is UiState.Loading -> { // when we are calling the api, API call will take time to fetch the data
                     Log.d(TAG, "observeData: Loading.... $it")
+                    binding.date.visibility = View.GONE
+                    binding.globeImage.visibility = View.GONE
+                    binding.description.visibility = View.GONE
+                    binding.progressBar.visibility = View.VISIBLE
                 }
             }
         }

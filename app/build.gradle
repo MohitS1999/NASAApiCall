@@ -15,7 +15,6 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -80,4 +79,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:2.6.1"
     // Fragment
     implementation "androidx.fragment:fragment-ktx:1.6.1"
+
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 }
